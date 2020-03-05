@@ -12,6 +12,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 )
 
 type Api struct {
@@ -20,6 +21,9 @@ type Api struct {
 
 	// http client
 	httpclient *http.Client
+
+	// endpoint Base URL
+	endpointBaseURL *url.URL
 }
 
 // New builds a API client from the provided token and options.
@@ -27,6 +31,11 @@ func New(token string, opts ...Option) *Api {
 	api := &Api{
 		token:      token,
 		httpclient: http.DefaultClient,
+		endpointBaseURL: &url.URL{
+			Scheme: "http",
+			Host:   "example.com",
+			Path:   "/",
+		},
 	}
 
 	for _, opt := range opts {
@@ -46,6 +55,13 @@ func OptionHTTPClient(c *http.Client) Option {
 	}
 }
 
+// EndpointURLOption .
+func EndpointBaseURLOption(endpointURL *url.URL) Option {
+	return func(api *Api) {
+		api.endpointBaseURL = endpointURL
+	}
+}
+
 // ResponseBody of example resource
 type ResponseBody struct {
 	Text string `json:"text"`
@@ -53,7 +69,7 @@ type ResponseBody struct {
 
 // Get example resource
 func (api *Api) Get(ctx context.Context) (*ResponseBody, error) {
-	req, err := http.NewRequest(http.MethodGet, "http://example.com/", nil)
+	req, err := http.NewRequest(http.MethodGet, api.endpointBaseURL.String(), nil)
 	if err != nil {
 		return nil, err
 	}

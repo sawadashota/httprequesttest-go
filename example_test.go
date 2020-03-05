@@ -10,7 +10,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/sawadashota/httprequesttest-go"
+	example "github.com/sawadashota/httprequesttest-go"
 )
 
 // Auth ValidToken
@@ -32,7 +32,7 @@ func NewTestClient(fn RoundTripFunc) *http.Client {
 }
 
 // client for testing normal response
-// *http.Response: only give value when you want customize reponse
+// *http.Response: only give value when you expectedText customize reponse
 func client(t *testing.T, respTime time.Duration, resp *http.Response) *http.Client {
 	t.Helper()
 
@@ -68,7 +68,7 @@ func client(t *testing.T, respTime time.Duration, resp *http.Response) *http.Cli
 	})
 }
 
-func TestApi_Get(t *testing.T) {
+func TestApi_Get_MockResponse(t *testing.T) {
 	cases := map[string]struct {
 		token                string
 		client               *http.Client
